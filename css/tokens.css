@@ -1,0 +1,81 @@
+/* ==========================================================================
+   DETEKTIF KEBAIKAN — DESIGN TOKENS
+   Source of Truth: Google Stitch "Kindness Detective Universe"
+   ========================================================================== */
+
+:root {
+  /* Brand & Palette (Section B + Stitch Design System) */
+  --color-lime: #B7D957;
+  --color-lime-light: #DDF0A4;
+  --color-lime-pale: #F1FFD1;
+  --color-lime-surface: #DCF8A4;
+  --color-lime-surface-high: #D1ED9A;
+  --color-lime-surface-low: #E8FFB8;
+  --color-lime-dim: #C9E492;
+
+  --color-olive-dark: #455B19;
+  --color-olive-primary: #506600;
+  --color-olive-deep: #3B4D00;
+  --color-olive-ink: #1F2E05;
+  --color-olive-muted: #505A3C;
+
+  --color-magenta: #E93683;
+  --color-magenta-deep: #B8185C;
+  --color-magenta-dark: #8E0049;
+  --color-pink: #FF8FBA;
+  --color-pink-soft: #FFD9E2;
+
+  --color-orange: #FF9D24;
+  --color-orange-deep: #D47907;
+  --color-orange-dark: #8B5000;
+  --color-orange-soft: #FFE4C2;
+
+  --color-white: #FFFFFF;
+  --color-glass: rgba(255, 255, 255, 0.86);
+  --color-glass-strong: rgba(255, 255, 255, 0.94);
+  --color-glass-border: rgba(255, 255, 255, 0.95);
+  --color-glass-outline: rgba(69, 91, 25, 0.1);
+
+  /* Typography */
+  --font-display: 'Fredoka', 'Baloo 2', 'Nunito', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Baloo 2', 'Fredoka', 'Nunito', system-ui, -apple-system, sans-serif;
+  --font-body: 'Nunito', system-ui, -apple-system, sans-serif;
+
+  /* Fluid Type Scale (max <= 2.5 * min for WCAG 1.4.4 zoom compliance) */
+  --text-hero: clamp(2.15rem, 1.45rem + 2.6vw, 3.6rem);
+  --text-h1: clamp(1.65rem, 1.25rem + 1.5vw, 2.55rem);
+  --text-h2: clamp(1.3rem, 1.05rem + 1vw, 1.9rem);
+  --text-h3: clamp(1.1rem, 0.98rem + 0.5vw, 1.38rem);
+  --text-body-lg: clamp(1.05rem, 0.96rem + 0.35vw, 1.25rem);
+  --text-body: clamp(0.95rem, 0.92rem + 0.15vw, 1.05rem);
+  --text-label: clamp(0.8rem, 0.76rem + 0.15vw, 0.9rem);
+  --text-magic: clamp(1.85rem, 1.25rem + 2.3vw, 3.2rem);
+
+  /* Radii (Stitch Level 3 Playful Roundedness) */
+  --radius-sm: 0.75rem;
+  --radius-md: 1.35rem;
+  --radius-lg: 2rem;
+  --radius-xl: 2.75rem;
+  --radius-pill: 9999px;
+
+  /* Spacing Rhythm */
+  --space-2xs: 0.35rem;
+  --space-xs: 0.55rem;
+  --space-sm: 0.85rem;
+  --space-md: 1.25rem;
+  --space-lg: 1.75rem;
+  --space-xl: 2.5rem;
+  --container-max: 1240px;
+
+  /* Shadows (Tinted Olive Ambient + 3D Extrusion Lips) */
+  --shadow-glass: 0 18px 38px -10px rgba(69, 91, 25, 0.2);
+  --shadow-card: 0 12px 26px -6px rgba(69, 91, 25, 0.14);
+  --shadow-header: 0 8px 24px -4px rgba(69, 91, 25, 0.15);
+  --shadow-bubble: 0 12px 28px -6px rgba(69, 91, 25, 0.16);
+
+  /* Z-index layers */
+  --z-bg: 0;
+  --z-main: 10;
+  --z-header: 40;
+  --z-confetti: 60;
+}

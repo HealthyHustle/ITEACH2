@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detektif Kebaikan — Game Edukasi PAUD</title>
+  <meta name="description" content="Media pembelajaran digital interaktif PAUD usia 5-6 tahun untuk mengenalkan kata Tolong dan Terima Kasih bersama Detektif Dodo." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/scenes.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link visually-hidden">Langsung ke area permainan</a>
+
+  <!-- Layered Meadow Background (Stitch Play Meadow Layer 0) -->
+  <div class="meadow-bg" aria-hidden="true">
+    <div class="meadow-orb meadow-orb--top-left"></div>
+    <div class="meadow-orb meadow-orb--mid-right"></div>
+    <div class="meadow-orb meadow-orb--bottom-left"></div>
+    <div class="meadow-spark meadow-spark--1">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+    </div>
+    <div class="meadow-spark meadow-spark--2">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l2.4 7.2L22 10.6l-7.6 2.4L12 20.2l-2.4-7.2L2 10.6l7.6-2.4z"/></svg>
+    </div>
+    <div class="meadow-spark meadow-spark--3"></div>
+    <div class="meadow-spark meadow-spark--4"></div>
+  </div>
+
+  <!-- Confetti Celebration Layer -->
+  <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
+
+  <!-- Centralized Accessible Live Announcer -->
+  <div id="live-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ======================================================================
+       PERSISTENT GAME HEADER HUD
+       Logo | Timer MM:SS | Pause | Bintang 0/3 | Musik | Suara | Panduan Guru
+       ====================================================================== -->
+  <header class="game-header">
+    <div class="game-header__inner">
+      <div class="brand-lockup">
+        <div class="brand-lockup__emblem" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.5-3.5"></path>
+            <path d="m8.5 11 1.7 1.7 3.5-3.5"></path>
+          </svg>
+        </div>
+        <div class="brand-lockup__text">
+          <span class="brand-lockup__title">DETEKTIF KEBAIKAN</span>
+          <span class="brand-lockup__tag">Game Edukasi PAUD</span>
+        </div>
+      </div>
+
+      <div class="hud-status" aria-label="Status Permainan">
+        <div id="hud-timer-pill" class="hud-pill hud-timer" aria-label="Sisa waktu permainan">
+          <svg class="icon hud-timer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="13" r="8"></circle>
+            <path d="M12 9v4l2.5 1.5"></path>
+            <path d="M9 2h6"></path>
+          </svg>
+          <span id="timer-display">03:00</span>
+        </div>
+
+        <button id="btn-pause" type="button" class="hud-toggle hud-toggle--pause" hidden>
+          <svg id="pause-icon" class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
+            <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
+          </svg>
+          <span id="pause-label">Jeda</span>
+        </button>
+
+        <div id="hud-stars-pill" class="hud-pill hud-stars" aria-label="Perolehan bintang">
+          <span class="star-icons" aria-hidden="true">
+            <svg class="star-slot" data-star-index="1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="star-slot" data-star-index="2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="star-slot" data-star-index="3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </span>
+          <span id="star-count-text" class="hud-stars__count">0/3</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-music-toggle" type="button" class="hud-toggle" aria-pressed="true" aria-label="Musik latar aktif">
+          <svg id="music-icon" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <span class="hud-toggle__label-hide-xs">Musik</span>
+        </button>
+
+        <button id="btn-voice-toggle" type="button" class="hud-toggle" aria-pressed="true" aria-label="Suara narasi aktif">
+          <svg id="voice-icon" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          <span class="hud-toggle__label-hide-xs">Suara</span>
+        </button>
+
+        <button id="btn-teacher-guide" type="button" class="hud-toggle hud-toggle--teacher">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+            <path d="M8 7h8"></path>
+            <path d="M8 11h6"></path>
+          </svg>
+          <span>Panduan Guru</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       MAIN GAME STAGE (4 INTEGRATED SCENES)
+       ====================================================================== -->
+  <main id="main-content" class="game-main">
+    <!-- Inline Pause Banner -->
+    <div id="pause-banner" class="pause-banner" role="status" hidden>
+      <span>Permainan sedang dijeda sementara. Timer berhenti di <strong id="pause-time-snapshot">03:00</strong>.</span>
+      <button id="btn-resume-inline" type="button" class="btn-3d btn-3d--orange btn-3d--sm">Lanjutkan Permainan</button>
+    </div>
+
+    <!-- ====================================================================
+         SCENE 1: OPENING / BERANDA GAME
+         Stitch Reference: 28760bcd0dac40ee8006f3a1a36e87f2 + 5bb24489a1de4940853d634e33f43dc1
+         ==================================================================== -->
+    <section id="scene-opening" class="scene" aria-labelledby="opening-heading">
+      <div class="opening-grid">
+        <div class="opening-left">
+          <!-- Dodo Speech Bubble -->
+          <div class="opening-speech">
+            <div class="opening-speech__icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.66 15l-1.2 4.35a1 1 0 0 0 1.24 1.24l4.35-1.2A10 10 0 1 0 12 2zm0 15a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm1-4.5h-2v-6h2v6z"/></svg>
+            </div>
+            <div class="opening-speech__body">
+              <div class="opening-speech__label">Sapaan Detektif Dodo</div>
+              <p class="opening-speech__text">
+                “Halo teman-teman! Aku Dodo. Yuk, bantu Dodo mencari teman yang membutuhkan bantuan!”
+              </p>
+            </div>
+            <button id="btn-opening-audio" type="button" class="btn-3d btn-3d--white btn-3d--sm" aria-label="Dengarkan sapaan Dodo">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+              <span>Dengar</span>
+            </button>
+          </div>
+
+          <!-- Master Frosted Glass Mission Card -->
+          <div class="glass-deck opening-card">
+            <div class="opening-badges">
+              <span class="pill-badge pill-badge--magenta">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Petualangan Kebaikan #01
+              </span>
+              <span class="pill-badge pill-badge--lime">Usia 5–6 Tahun • Ramah PAUD</span>
+            </div>
+
+            <div>
+              <h1 id="opening-heading" class="opening-title" tabindex="-1">
+                <span class="opening-title__word-1">DETEKTIF</span>
+                <span class="opening-title__word-2">KEBAIKAN</span>
+              </h1>
+              <p class="opening-subtitle">
+                <span>Ayo cari teman!</span>
+                <svg class="icon" viewBox="0 0 24 24" fill="var(--color-magenta)" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </p>
+            </div>
+
+            <p class="opening-desc">
+              Temukan teman yang membutuhkan bantuan di taman bermain, lalu belajar mengucapkan kata ajaib <strong>“Tolong”</strong> dan <strong>“Terima Kasih”</strong> bersama Dodo!
+            </p>
+
+            <div class="opening-actions">
+              <button id="btn-start-game" type="button" class="btn-3d btn-3d--orange btn-3d--xl">
+                <span>AYO MULAI!</span>
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <button id="btn-opening-guide" type="button" class="btn-3d btn-3d--white">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                </svg>
+                <span>Panduan Guru</span>
+              </button>
+            </div>
+
+            <div class="opening-highlights">
+              <div class="mini-stat">
+                <div class="mini-stat__icon mini-stat__icon--orange" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                </div>
+                <div>
+                  <span class="mini-stat__label">Misi 1</span>
+                  <span class="mini-stat__value">Cari Teman</span>
+                </div>
+              </div>
+              <div class="mini-stat">
+                <div class="mini-stat__icon mini-stat__icon--pink" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <div>
+                  <span class="mini-stat__label">Misi 2</span>
+                  <span class="mini-stat__value">Tantangan Moral</span>
+                </div>
+              </div>
+              <div class="mini-stat">
+                <div class="mini-stat__icon mini-stat__icon--lime" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <div>
+                  <span class="mini-stat__label">Durasi &amp; Target</span>
+                  <span class="mini-stat__value">3 Menit • 3 Bintang</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Showcase: Original Stitch Dodo Mascot -->
+        <div class="opening-mascot">
+          <div class="mascot-stage">
+            <div class="mascot-badge-top">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <span>DODO SIAP!</span>
+            </div>
+            <div class="mascot-frame">
+              <img
+                src="assets/images/dodo-mascot.png"
+                alt="Maskot Detektif Dodo, burung kecil berwarna kuning bermata biru besar mengenakan topi detektif, tas ransel ungu, dan membawa kaca pembesar emas"
+                width="896"
+                height="1200"
+                class="mascot-frame__img"
+              />
+            </div>
+            <div class="mascot-pedestal" aria-hidden="true"></div>
+            <div class="mascot-tag">
+              <span class="mascot-tag__dot" aria-hidden="true"></span>
+              <span>Detektif Utama: Sahabat Dodo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCENE 2: PLAYGROUND HIDDEN OBJECT
+         Stitch Reference: 5ea316360f964b168c7d3783a9b99d76 + f426b4d14bde4c99a33792910c99ff2f
+         ==================================================================== -->
+    <section id="scene-playground" class="scene" aria-labelledby="playground-heading" hidden>
+      <!-- Dodo Companion Instruction Banner -->
+      <div class="glass-deck dodo-banner">
+        <div id="playground-dodo-avatar" class="dodo-avatar">
+          <img
+            src="assets/images/dodo-mascot.png"
+            alt="Detektif Dodo memberi petunjuk"
+            width="896"
+            height="1200"
+            class="dodo-avatar__img"
+          />
+          <span class="dodo-avatar__badge" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="11" cy="11" r="6"></circle><path d="m19 19-3.2-3.2"></path></svg>
+          </span>
+        </div>
+
+        <div class="dodo-bubble">
+          <div class="dodo-bubble__top">
+            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+              <span class="pill-badge pill-badge--magenta">Misi 1 • Taman Bermain</span>
+              <h1 id="playground-heading" class="visually-hidden" tabindex="-1">Yuk, Cari Teman di Taman Bermain</h1>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+              <button id="btn-playground-audio" type="button" class="btn-3d btn-3d--white btn-3d--sm">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+                <span>Dengarkan Dodo</span>
+              </button>
+              <button id="btn-playground-hint" type="button" class="btn-3d btn-3d--orange btn-3d--sm">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 18h6"></path>
+                  <path d="M10 22h4"></path>
+                  <path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path>
+                </svg>
+                <span>Petunjuk Dodo</span>
+              </button>
+            </div>
+          </div>
+          <p id="playground-speech-text" class="dodo-bubble__quote">
+            “Coba cari teman yang terlihat kesulitan, yuk!”
+          </p>
+          <p id="playground-sub-hint" class="dodo-bubble__sub">
+            Amati gambar taman bermain di bawah ini, lalu klik langsung anak yang sedang kesulitan atau pilih kartunya.
+          </p>
+        </div>
+      </div>
+
+      <!-- Main Playground Hidden Object Illustration -->
+      <div class="glass-deck playground-stage-card">
+        <div class="playground-viewport">
+          <img
+            src="assets/images/taman-bermain.png"
+            alt="Ilustrasi taman bermain dengan lima aktivitas anak: membaca buku di bawah pohon, bermain bola di rumput, bermain ayunan, bermain perosotan kuning, dan seorang anak yang kesulitan mengambil bola merah di bawah bangku taman"
+            width="1376"
+            height="768"
+            class="playground-viewport__img"
+          />
+
+          <!-- 5 Non-obstructive Interactive Hitboxes aligned directly over each child -->
+          <button type="button" class="playground-hotspot" data-activity="membaca-buku" aria-label="Membaca Buku"></button>
+          <button type="button" class="playground-hotspot" data-activity="bermain-bola" aria-label="Bermain Bola"></button>
+          <button type="button" class="playground-hotspot" data-activity="bermain-ayunan" aria-label="Bermain Ayunan"></button>
+          <button type="button" class="playground-hotspot" data-activity="kesulitan-bola" aria-label="Kesulitan Mengambil Bola"></button>
+          <button type="button" class="playground-hotspot" data-activity="bermain-perosotan" aria-label="Bermain Perosotan"></button>
+
+          <!-- Target Star Burst (shown on correct answer) -->
+          <div id="playground-star-burst" class="target-star-burst" aria-hidden="true" hidden>
+            <svg class="burst-star" width="38" height="38" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="burst-star" width="54" height="54" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="burst-star" width="38" height="38" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+
+          <!-- Celebratory Toast Overlay (hidden until solved) -->
+          <div id="playground-solved-toast" class="playground-solved-toast" hidden>
+            <span class="playground-solved-toast__icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </span>
+            <span class="playground-solved-toast__text">Hebat! Teman ditemukan!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 Mandatory Activity Cards (Zero Character Names, Equal Visual Weight Until Solved) -->
+      <div class="activity-dock">
+        <div class="activity-dock__header">
+          <span class="activity-dock__label">Lima Aktivitas di Taman Bermain:</span>
+          <span id="playground-progress-badge" class="pill-badge pill-badge--lime">Temukan 1 Teman</span>
+        </div>
+
+        <div class="activity-grid">
+          <button type="button" class="activity-card" data-activity-card="bermain-ayunan">
+            <div class="activity-card__top">
+              <span class="activity-card__icon" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 5h16"></path><path d="M8 5v11"></path><path d="M16 5v11"></path><path d="M7 16h10"></path></svg>
+              </span>
+              <span class="activity-card__status" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+            </div>
+            <div>
+              <span class="activity-card__zone">Taman Tengah</span>
+              <span class="activity-card__name">Bermain Ayunan</span>
+            </div>
+          </button>
+
+          <button type="button" class="activity-card" data-activity-card="bermain-bola">
+            <div class="activity-card__top">
+              <span class="activity-card__icon" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"></circle><polygon points="12 7 16 10 14.5 15 9.5 15 8 10"></polygon></svg>
+              </span>
+              <span class="activity-card__status" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+            </div>
+            <div>
+              <span class="activity-card__zone">Rumput Terbuka</span>
+              <span class="activity-card__name">Bermain Bola</span>
+            </div>
+          </button>
+
+          <button type="button" class="activity-card" data-activity-card="membaca-buku">
+            <div class="activity-card__top">
+              <span class="activity-card__icon" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3H12v16H4.5A2.5 2.5 0 0 0 2 21.5z"></path><path d="M22 5.5A2.5 2.5 0 0 0 19.5 3H12v16h7.5a2.5 2.5 0 0 1 2.5 2.5z"></path></svg>
+              </span>
+              <span class="activity-card__status" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+            </div>
+            <div>
+              <span class="activity-card__zone">Bawah Pohon</span>
+              <span class="activity-card__name">Membaca Buku</span>
+            </div>
+          </button>
+
+          <button type="button" class="activity-card" data-activity-card="kesulitan-bola">
+            <div class="activity-card__top">
+              <span class="activity-card__icon" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="14" r="5"></circle><path d="M4 8h16"></path><path d="M6 8v10"></path><path d="M18 8v10"></path></svg>
+              </span>
+              <span class="activity-card__status" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+            </div>
+            <div>
+              <span class="activity-card__zone">Dekat Bangku Taman</span>
+              <span class="activity-card__name">Kesulitan Mengambil Bola</span>
+            </div>
+          </button>
+
+          <button type="button" class="activity-card" data-activity-card="bermain-perosotan">
+            <div class="activity-card__top">
+              <span class="activity-card__icon" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V6h4l8 11h3"></path><path d="M5 11h4"></path><path d="M5 15h4"></path></svg>
+              </span>
+              <span class="activity-card__status" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+            </div>
+            <div>
+              <span class="activity-card__zone">Perosotan Kuning</span>
+              <span class="activity-card__name">Bermain Perosotan</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Playground Feedback & Next Action Strip -->
+      <div id="playground-feedback" class="feedback-strip" hidden>
+        <div class="feedback-strip__content">
+          <div class="feedback-strip__icon" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <div id="playground-feedback-title" class="feedback-strip__title">Catatan Detektif Dodo</div>
+            <p id="playground-feedback-text" class="feedback-strip__text"></p>
+          </div>
+        </div>
+        <button id="btn-to-moral" type="button" class="btn-3d btn-3d--magenta" hidden>
+          <span>Lanjut ke Tantangan Moral</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCENE 3: TANTANGAN MORAL
+         Stitch Reference: ae987dba06094da68335c3b96d2e7c5d
+         ==================================================================== -->
+    <section id="scene-moral" class="scene" aria-labelledby="moral-heading" hidden>
+      <!-- Close-up Situation Illustration (Consistent characters & park) -->
+      <div class="glass-deck moral-spotlight">
+        <div class="moral-spotlight__frame">
+          <img
+            id="moral-scene-img"
+            src="assets/images/taman-bermain.png"
+            alt="Tampilan lebih dekat anak yang sedang berusaha mengambil bola merah di bawah bangku taman"
+            width="1376"
+            height="768"
+            class="moral-spotlight__img moral-spotlight__img--closeup-stuck"
+          />
+          <div class="moral-spotlight__scrim" aria-hidden="true"></div>
+          <div class="moral-spotlight__top">
+            <span id="moral-stage-badge" class="pill-badge pill-badge--olive">Investigasi Dekat • Bola Tersangkut di Bawah Bangku</span>
+            <span id="moral-step-pill" class="pill-badge pill-badge--orange">Pertanyaan 1 dari 2</span>
+          </div>
+          <p id="moral-caption-text" class="moral-spotlight__caption">
+            Lihat, bola merah teman kita tersangkut di bawah bangku taman. Yuk bantu pilih ucapan yang baik!
+          </p>
+        </div>
+      </div>
+
+      <!-- Dodo Question Banner -->
+      <div class="glass-deck dodo-banner">
+        <div id="moral-dodo-avatar" class="dodo-avatar">
+          <img
+            src="assets/images/dodo-mascot.png"
+            alt="Detektif Dodo mengajukan pertanyaan moral"
+            width="896"
+            height="1200"
+            class="dodo-avatar__img"
+          />
+          <span class="dodo-avatar__badge" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+          </span>
+        </div>
+
+        <div class="dodo-bubble">
+          <div class="dodo-bubble__top">
+            <span id="moral-question-badge" class="pill-badge pill-badge--magenta">Tantangan Moral • Pertanyaan 1 dari 2</span>
+            <button id="btn-moral-audio" type="button" class="btn-3d btn-3d--white btn-3d--sm">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+              <span>Dengarkan Suara Dodo</span>
+            </button>
+          </div>
+          <h1 id="moral-heading" class="dodo-bubble__quote" tabindex="-1">
+            “Teman kita kesulitan mengambil bola. Kalau kamu membutuhkan bantuan, apa yang harus kamu katakan?”
+          </h1>
+          <p class="dodo-bubble__sub">Sentuh atau klik satu kartu jawaban yang benar ya!</p>
+        </div>
+      </div>
+
+      <!-- Dynamic Choice Cards Container (3 cards for Q1, 2 cards for Q2) -->
+      <div id="moral-choices-grid" class="quiz-choices quiz-choices--3" role="group" aria-label="Pilihan jawaban tantangan moral"></div>
+
+      <!-- Moral Quiz Feedback Banner -->
+      <div id="moral-feedback" class="feedback-strip" hidden>
+        <div class="feedback-strip__content">
+          <div class="feedback-strip__icon" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <div id="moral-feedback-title" class="feedback-strip__title"></div>
+            <p id="moral-feedback-text" class="feedback-strip__text"></p>
+          </div>
+        </div>
+        <button id="btn-moral-next" type="button" class="btn-3d btn-3d--magenta" hidden>
+          <span id="moral-next-label">Lanjut ke Pertanyaan 2</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCENE 4: CLOSING & PRAKTIK
+         Stitch Reference: 94e10ee425a04a0ba0093a80872b77dd
+           + ff7c1b8ee16a4a958470e008d731f01a (Teman Saling Membantu)
+           + fc749cc6e76240c8b3ee8f4bb7a07522 (Victory Dodo)
+         ==================================================================== -->
+    <section id="scene-closing" class="scene" aria-labelledby="closing-heading" hidden>
+      <!-- Story Resolution + Dodo Narration -->
+      <div class="closing-hero">
+        <div class="glass-deck closing-story-card">
+          <div class="closing-story-card__media">
+            <img
+              src="assets/images/teman-membantu.png"
+              alt="Dua anak tersenyum bahagia saling membantu mengambil bola merah di bangku taman dengan Detektif Dodo bertepuk tangan di samping mereka"
+              width="1376"
+              height="768"
+            />
+            <div class="closing-story-card__badges">
+              <span class="pill-badge pill-badge--lime">Teman Saling Membantu</span>
+              <span class="pill-badge pill-badge--magenta">Misi Selesai!</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="closing-dodo-col">
+          <div class="closing-dodo-head">
+            <div class="dodo-avatar is-happy">
+              <img
+                src="assets/images/dodo-mascot.png"
+                alt="Detektif Dodo tersenyum gembira"
+                width="896"
+                height="1200"
+                class="dodo-avatar__img"
+              />
+            </div>
+            <div>
+              <span class="pill-badge pill-badge--orange">Sahabat Detektif</span>
+              <h1 id="closing-heading" class="visually-hidden" tabindex="-1">Selamat! Kamu Adalah Detektif Kebaikan</h1>
+              <p style="font-family:var(--font-heading);font-size:1.25rem;font-weight:800;color:var(--color-olive-dark);margin-top:0.2rem;">Detektif Dodo</p>
+            </div>
+          </div>
+
+          <div class="dodo-bubble">
+            <p class="dodo-bubble__quote">
+              “Yeay! Teman kita sudah mendapatkan bantuannya. Jangan lupa mengucapkan terima kasih, ya!”
+            </p>
+            <p class="dodo-bubble__sub">
+              Sekarang yuk berlatih mengucapkan dua kata ajaib bersama guru atau orang tua!
+            </p>
+            <div style="padding-top:0.35rem;">
+              <button id="btn-closing-audio" type="button" class="btn-3d btn-3d--olive btn-3d--sm">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+                <span>Dengarkan Pesan Dodo</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Practice Area: AYO UCAPKAN BERSAMA! (Non-Quiz Speaking Practice) -->
+      <div class="practice-section">
+        <div class="practice-banner">
+          <span class="pill-badge pill-badge--olive">Area Praktik Pengucapan Bersama</span>
+          <h2 class="practice-banner__title">AYO UCAPKAN BERSAMA!</h2>
+          <p class="practice-banner__sub">
+            Ketuk kartu di bawah ini untuk mendengarkan kata, lalu ucapkan bersama dengan suara jelas dan ramah.
+          </p>
+        </div>
+
+        <div class="practice-grid">
+          <button id="card-practice-tolong" type="button" class="practice-card" data-practice-word="tolong" aria-label="Putar suara kata Tolong">
+            <div class="practice-card__top">
+              <span class="pill-badge pill-badge--pink">Ungkapan 1</span>
+              <span class="pill-badge pill-badge--lime">Meminta Bantuan</span>
+            </div>
+            <div class="practice-card__emblem" aria-hidden="true">
+              <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 12h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 14"></path>
+                <path d="m7 18 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"></path>
+                <path d="m2 13 6 6"></path>
+              </svg>
+            </div>
+            <div class="practice-card__word-box">
+              <span class="practice-card__word">TOLONG</span>
+            </div>
+            <span class="btn-3d btn-3d--magenta practice-card__cta" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              <span>Dengarkan “Tolong”</span>
+            </span>
+          </button>
+
+          <button id="card-practice-terima-kasih" type="button" class="practice-card practice-card--thanks" data-practice-word="terima-kasih" aria-label="Putar suara kata Terima Kasih">
+            <div class="practice-card__top">
+              <span class="pill-badge pill-badge--lime">Ungkapan 2</span>
+              <span class="pill-badge pill-badge--orange">Setelah Dibantu</span>
+            </div>
+            <div class="practice-card__emblem" aria-hidden="true">
+              <svg width="46" height="46" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+            </div>
+            <div class="practice-card__word-box">
+              <span class="practice-card__word">TERIMA KASIH</span>
+            </div>
+            <span class="btn-3d btn-3d--olive practice-card__cta" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              <span>Dengarkan “Terima Kasih”</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Final Appreciation & Victory Dodo -->
+      <div class="glass-deck victory-card">
+        <div class="victory-visual">
+          <img
+            src="assets/images/victory-dodo.png"
+            alt="Detektif Dodo memegang medali emas kemenangan dikelilingi anak-anak bergembira, bintang emas, dan konfeti di taman"
+            width="1376"
+            height="768"
+          />
+        </div>
+
+        <div class="victory-content">
+          <span class="pill-badge pill-badge--magenta">Penghargaan Detektif Cilik</span>
+          <h2 class="victory-title">SELAMAT!</h2>
+          <p class="victory-subtitle">KAMU ADALAH DETEKTIF KEBAIKAN!</p>
+
+          <div class="victory-medal">
+            <div class="victory-medal__disc" aria-hidden="true">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="victory-medal__info">
+              <span class="victory-medal__name">Medali Emas Kebaikan</span>
+              <span id="closing-summary-meta" class="victory-medal__meta">3/3 Bintang • Sisa Waktu 03:00</span>
+            </div>
+          </div>
+
+          <div class="closing-replay-wrap" style="width:100%;">
+            <button id="btn-play-again" type="button" class="btn-3d btn-3d--orange btn-3d--xl closing-replay-btn">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+              <span>MAIN LAGI</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="game-footer">
+    <div class="game-footer__inner">
+      <div class="footer-badges">
+        <span class="footer-chip">Media Pembelajaran PAUD (5–6 Tahun)</span>
+        <span class="footer-chip">Tema: Tolong &amp; Terima Kasih</span>
+      </div>
+      <span>Detektif Kebaikan • Durasi Permainan 3 Menit</span>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       NATIVE MODAL DIALOG: PANDUAN GURU (Light-dismiss closedby="any")
+       ====================================================================== -->
+  <dialog id="dialog-teacher-guide" class="game-dialog" closedby="any" aria-labelledby="teacher-guide-title">
+    <div class="dialog-card">
+      <div class="dialog-card__header">
+        <h2 id="teacher-guide-title" class="dialog-card__title">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+            <path d="M8 7h8"></path>
+            <path d="M8 11h6"></path>
+          </svg>
+          <span>Panduan Guru — Detektif Kebaikan</span>
+        </h2>
+        <form method="dialog">
+          <button type="submit" value="close" class="dialog-card__close" aria-label="Tutup Panduan Guru">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+          </button>
+        </form>
+      </div>
+
+      <div class="dialog-card__body">
+        <div class="guide-grid">
+          <article class="guide-card">
+            <h3 class="guide-card__heading">1. Tujuan Pembelajaran</h3>
+            <p>Mengenalkan penggunaan kata <strong>Tolong</strong> dan <strong>Terima Kasih</strong>.</p>
+          </article>
+
+          <article class="guide-card guide-card--accent">
+            <h3 class="guide-card__heading">2. Sasaran</h3>
+            <p>Anak PAUD usia <strong>5–6 tahun</strong>.</p>
+          </article>
+
+          <article class="guide-card guide-card--warm">
+            <h3 class="guide-card__heading">3. Durasi</h3>
+            <p><strong>3 menit</strong> (180 detik) untuk satu sesi bermain lengkap.</p>
+          </article>
+        </div>
+
+        <article class="guide-card">
+          <h3 class="guide-card__heading">4. Cara Bermain</h3>
+          <ol class="guide-card__list">
+            <li>Anak mengamati taman bermain.</li>
+            <li>Anak mencari teman yang membutuhkan bantuan.</li>
+            <li>Anak menjawab dua pertanyaan moral.</li>
+            <li>Anak mempraktikkan dua ungkapan.</li>
+          </ol>
+        </article>
+
+        <article class="guide-card guide-card--accent">
+          <h3 class="guide-card__heading">5. Pendampingan Guru</h3>
+          <p>Guru dapat memberikan penguatan dan mengembangkan praktik pengucapan secara langsung bersama anak di kelas.</p>
+        </article>
+
+        <article class="guide-card guide-card--warm">
+          <h3 class="guide-card__heading">6. Materi Moral</h3>
+          <ul class="guide-card__list">
+            <li>Meminta bantuan dengan sopan.</li>
+            <li>Mengucapkan terima kasih setelah mendapatkan bantuan.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="dialog-card__footer">
+        <form method="dialog">
+          <button type="submit" value="done" class="btn-3d btn-3d--olive btn-3d--sm" autofocus>Tutup Panduan</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ======================================================================
+       NATIVE MODAL DIALOG: WAKTU HABIS (Friendly Kid-Safe End State)
+       ====================================================================== -->
+  <dialog id="dialog-time-up" class="game-dialog" closedby="none" aria-labelledby="time-up-title">
+    <div class="dialog-card">
+      <div class="dialog-card__header">
+        <h2 id="time-up-title" class="dialog-card__title">Waktu Bermain Selesai!</h2>
+      </div>
+      <div class="dialog-card__body timeup-body">
+        <div class="timeup-dodo">
+          <img
+            src="assets/images/dodo-mascot.png"
+            alt="Detektif Dodo memberi semangat"
+            width="896"
+            height="1200"
+          />
+        </div>
+        <p class="dodo-bubble__quote">
+          “Hebat! Kamu sudah berusaha bersama Dodo hari ini. Yuk, kita main lagi dan kumpulkan semua bintang kebaikan!”
+        </p>
+        <p id="time-up-stars-text" class="pill-badge pill-badge--orange">Perolehan Bintang: 0/3</p>
+        <div class="timeup-actions">
+          <button id="btn-timeup-replay" type="button" class="btn-3d btn-3d--orange btn-3d--xl" autofocus>
+            <span>MAIN LAGI</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
